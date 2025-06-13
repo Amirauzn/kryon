@@ -1,18 +1,36 @@
-function sendMessage() {
-  const input = document.getElementById("user-input");
-  const chatBox = document.getElementById("chat-box");
-  
-  if (input.value.trim() === "") return;
+const API_KEY = "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"; //
 
-  const userMessage = `<div><strong>You:</strong> ${input.value}</div>`;
-  const aiReply = `<div><strong>KRYON:</strong> ${getResponse(input.value)}</div>`;
-  
-  chatBox.innerHTML += userMessage + aiReply;
-  input.value = "";
-  chatBox.scrollTop = chatBox.scrollHeight;
-}
+const chatArea = document.getElementById("chat-area");
+const userInput = document.getElementById("user-input");
+const sendBtn = document.getElementById("send-btn");
 
-function getResponse(text) {
-  // Ganti nanti dengan AI logic (misal pakai API)
-  return `You said: "${text}". I'm still learning 🧠`;
+sendBtn.addEventListener("click", async () => {
+  const userMessage = userInput.value.trim();
+  if (!userMessage) return;
+
+  addMessage("You", userMessage);
+  userInput.value = "";
+
+  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "openai/gpt-3.5-turbo", //
+      messages: [{ role: "user", content: userMessage }]
+    })
+  });
+
+  const data = await response.json();
+  const aiReply = data.choices?.[0]?.message?.content || "Gagal mendapatkan jawaban 😢";
+
+  addMessage("KRYON", aiReply);
+});
+
+function addMessage(sender, message) {
+  const msgDiv = document.createElement("div");
+  msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
+  chatArea.appendChild(msgDiv);
 }
