@@ -42,10 +42,16 @@ function handleSend() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "openai/gpt-3.5-turbo",
+      model: "deepseek-chat-r1-0528-qwen3-8b",
       messages: [
-        { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
-        { role: "user", content: userText }
+        {
+          role: "system",
+          content: "You are Kryon, a helpful, ambitious, male-style personal AI assistant who speaks fluent Indonesian and English."
+        },
+        {
+          role: "user",
+          content: userText
+        }
       ]
     })
   })
@@ -56,7 +62,7 @@ function handleSend() {
     })
     .catch(error => {
       console.error("Error:", error);
-      addMessage("Kryon", "❌ Terjadi kesalahan. Coba lagi nanti.");
+      addMessage("Kryon", "❌ Terjadi kesalahan saat menghubungi OpenRouter. Cek API key dan model.");
     });
 }
 
