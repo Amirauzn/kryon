@@ -1,36 +1,71 @@
-const API_KEY = "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"; //
+let API_KEY = localStorage.getItem("openrouter_api_key") || "";
 
 const chatArea = document.getElementById("chat-area");
 const userInput = document.getElementById("user-input");
-const sendBtn = document.getElementById("send-btn");
+const sendButton = document.getElementById("send-btn");
 
-sendBtn.addEventListener("click", async () => {
-  const userMessage = userInput.value.trim();
-  if (!userMessage) return;
+sendButton.addEventListener("click", handleSend);
 
-  addMessage("You", userMessage);
+userInput.addEventListener("keypress", function (e) {
+  if (e.key === "Enter") {
+    handleSend();
+  }
+});
+
+function handleSend() {
+  const userText = userInput.value.trim();
+  if (!userText) return;
+
+  addMessage("You", userText);
   userInput.value = "";
 
-  const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+  // Check if user is trying to set the API key
+  if (userText.toLowerCase().startsWith("setapikey")) {
+    const parts = userText.split(" ");
+    if (parts.length === 2) {
+      API_KEY = parts[1];
+      localStorage.setItem("openrouter_api_key", API_KEY);
+      addMessage("Kryon", "✅ API key berhasil disimpan di browser kamu!");
+    } else {
+      addMessage("Kryon", "⚠️ Format salah. Ketik seperti ini:\n`setapikey sk-xxxxx`");
+    }
+    return;
+  }
+
+  if (!API_KEY) {
+    addMessage("Kryon", "❗ API key belum diset. Ketik `setapikey sk-xxxxx` untuk mulai.");
+    return;
+  }
+
+  fetch("https://openrouter.ai/api/v1/chat/completions", {
     method: "POST",
     headers: {
       "Authorization": `Bearer ${API_KEY}`,
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "openai/gpt-3.5-turbo", //
-      messages: [{ role: "user", content: userMessage }]
+      model: "openai/gpt-3.5-turbo",
+      messages: [
+        { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
+        { role: "user", content: userText }
+      ]
     })
-  });
-
-  const data = await response.json();
-  const aiReply = data.choices?.[0]?.message?.content || "Gagal mendapatkan jawaban 😢";
-
-  addMessage("KRYON", aiReply);
-});
+  })
+    .then(response => response.json())
+    .then(data => {
+      const reply = data.choices?.[0]?.message?.content || "⚠️ Kryon tidak bisa menjawab saat ini.";
+      addMessage("Kryon", reply);
+    })
+    .catch(error => {
+      console.error("Error:", error);
+      addMessage("Kryon", "❌ Terjadi kesalahan. Coba lagi nanti.");
+    });
+}
 
 function addMessage(sender, message) {
-  const msgDiv = document.createElement("div");
-  msgDiv.innerHTML = `<strong>${sender}:</strong> ${message}`;
-  chatArea.appendChild(msgDiv);
+  const messageDiv = document.createElement("div");
+  messageDiv.classList.add("message");
+  messageDiv.innerHTML = `<strong>${sender}:</strong> ${marked.parse(message)}`;
+  chatArea.appendChild(messageDiv);
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
