@@ -23,9 +23,9 @@ function handleSend() {
     if (parts.length === 2) {
       API_KEY = parts[1];
       localStorage.setItem("openrouter_api_key", API_KEY);
-      addMessage("Kryon", "✅ API key berhasil disimpan di browser kamu!");
+      addMessage("Kryon", "✅ API key berhasil disimpan!");
     } else {
-      addMessage("Kryon", "⚠️ Format salah. Ketik seperti ini:\n`setapikey sk-xxxxx`");
+      addMessage("Kryon", "⚠️ Format salah. Ketik: `setapikey sk-xxxxx`");
     }
     return;
   }
@@ -36,20 +36,22 @@ function handleSend() {
   }
 
   fetch("https://openrouter.ai/api/v1/chat/completions", {
-  method: "POST",
-  headers: {
-    "Authorization": `Bearer ${API_KEY}`,
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
-    messages: [
-      { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
-      { role: "user", content: userText }
-    ]
+    method: "POST",
+    headers: {
+      "Authorization": `Bearer ${API_KEY}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+      messages: [
+        {
+          role: "system",
+          content: "You are Kryon, a helpful, ambitious AI assistant fluent in Indonesian, English, Russian, Turkish, and French. Greet users in the language they use."
+        },
+        { role: "user", content: userText }
+      ]
+    })
   })
-})
-
     .then(response => response.json())
     .then(data => {
       const reply = data.choices?.[0]?.message?.content || "⚠️ Kryon tidak bisa menjawab saat ini.";
