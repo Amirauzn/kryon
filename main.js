@@ -46,7 +46,7 @@ function handleSend() {
       messages: [
         {
           role: "system",
-          content: "You are Kryon, a helpful, ambitious, male-style personal AI assistant who speaks fluent Indonesian and English."
+          content: "You are Kryon, a helpful and ambitious male-style personal AI assistant."
         },
         {
           role: "user",
@@ -62,7 +62,7 @@ function handleSend() {
     })
     .catch(error => {
       console.error("Error:", error);
-      addMessage("Kryon", "❌ Terjadi kesalahan saat menghubungi OpenRouter. Cek API key dan model.");
+      addMessage("Kryon", "❌ Terjadi kesalahan saat menghubungi Kryon.");
     });
 }
 
