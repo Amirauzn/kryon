@@ -5,7 +5,6 @@ const userInput = document.getElementById("user-input");
 const sendButton = document.getElementById("send-btn");
 
 sendButton.addEventListener("click", handleSend);
-
 userInput.addEventListener("keypress", function (e) {
   if (e.key === "Enter") {
     handleSend();
@@ -19,7 +18,6 @@ function handleSend() {
   addMessage("You", userText);
   userInput.value = "";
 
-  // Check if user is trying to set the API key
   if (userText.toLowerCase().startsWith("setapikey")) {
     const parts = userText.split(" ");
     if (parts.length === 2) {
@@ -65,7 +63,7 @@ function handleSend() {
 function addMessage(sender, message) {
   const messageDiv = document.createElement("div");
   messageDiv.classList.add("message");
-  messageDiv.innerHTML = `<strong>${sender}:</strong> ${marked.parse(message)}`;
+  messageDiv.innerHTML = `<strong>${sender}:</strong> ${message.replace(/\n/g, "<br>")}`;
   chatArea.appendChild(messageDiv);
   chatArea.scrollTop = chatArea.scrollHeight;
 }
