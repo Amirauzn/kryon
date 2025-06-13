@@ -42,16 +42,10 @@ function handleSend() {
       "Content-Type": "application/json"
     },
     body: JSON.stringify({
-      model: "deepseek-chat-r1-0528-qwen3-8b",
+      model: "deepseek-ai/deepseek-chat-r1-0528-qwen3-8b",
       messages: [
-        {
-          role: "system",
-          content: "You are Kryon, a helpful and ambitious male-style personal AI assistant."
-        },
-        {
-          role: "user",
-          content: userText
-        }
+        { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
+        { role: "user", content: userText }
       ]
     })
   })
@@ -62,7 +56,7 @@ function handleSend() {
     })
     .catch(error => {
       console.error("Error:", error);
-      addMessage("Kryon", "❌ Terjadi kesalahan saat menghubungi Kryon.");
+      addMessage("Kryon", "❌ Terjadi kesalahan. Coba lagi nanti.");
     });
 }
 
