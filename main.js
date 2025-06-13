@@ -36,19 +36,20 @@ function handleSend() {
   }
 
   fetch("https://openrouter.ai/api/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${API_KEY}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: "deepseek-ai/deepseek-chat-r1-0528-qwen3-8b",
-      messages: [
-        { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
-        { role: "user", content: userText }
-      ]
-    })
+  method: "POST",
+  headers: {
+    "Authorization": `Bearer ${API_KEY}`,
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    model: "deepseek/deepseek-r1-0528-qwen3-8b:free",
+    messages: [
+      { role: "system", content: "You are Kryon, a helpful and ambitious male-style personal AI assistant." },
+      { role: "user", content: userText }
+    ]
   })
+})
+
     .then(response => response.json())
     .then(data => {
       const reply = data.choices?.[0]?.message?.content || "⚠️ Kryon tidak bisa menjawab saat ini.";
